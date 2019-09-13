@@ -39,34 +39,53 @@
       function drawTable() {
         var totalRows = document.getElementById("rowsInput").value;
         var cellsInRow = document.getElementById("colsInput").value;
+        let minesInput = document.getElementById("minesInput").value;
         var min = 1;
-        var max = totalRows * cellsInRow;
+        var getRandom1 = [];
+        var max = totalRows <= cellsInRow ? totalRows : cellsInRow;
         // get the reference for the body
         var div1 = document.getElementById("div1");
 
         // creates a <table> element
         var tbl = document.createElement("table");
+        for (var x = 0; x < minesInput; x++) {
+          getRandom1[x] = Math.floor(Math.random() * max);
+          console.log(getRandom1[x]);
+        }
+
+        for (var i = 0; i < getRandom1.length; i++) {
+          for (var j = 0; j < getRandom1.length; j++) {
+            if (i != j) {
+              if (getRandom1[i] == getRandom1[j]) {
+                // means there are duplicate values
+                getRandom1[i] = Math.floor(Math.random() * max);
+                console.log(getRandom1[i]);
+              }
+            }
+          }
+        }
 
         // creating rows
         for (var r = 0; r < totalRows; r++) {
           var row = document.createElement("tr");
-          getRandom1 = Math.floor(Math.random() * (max - min + 1)) + min;
 
           // create cells in row
           for (var c = 0; c < cellsInRow; c++) {
             var cell = document.createElement("td");
-            getRandom = 3;
-            if (r == getRandom && c == getRandom) {
-              console.log("a");
+            //getRandom = 3;
+            for (var i = 0; i < getRandom1.length; i++) {
+              if (r == getRandom1[i] && c == getRandom1[i]) {
+                // console.log("a");
 
-              var cellText = document.createTextNode("X");
-              cell.appendChild(cellText);
-              row.appendChild(cell);
-            } else {
-              console.log("b");
-              var cellText = document.createTextNode(" ");
-              cell.appendChild(cellText);
-              row.appendChild(cell);
+                var cellText = document.createTextNode("X");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+              } else {
+                //console.log("b");
+                var cellText = document.createTextNode(" ");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+              }
             }
           }
 
@@ -75,7 +94,6 @@
 
         div1.appendChild(tbl); // appends <table> into <div1>
       }
-      window.onload = drawTable;
     </script>
   </body>
 </html>
