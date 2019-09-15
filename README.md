@@ -1,4 +1,4 @@
-#Minesweeper
+# Minesweeper
 
 When I started thinking about which programming language to use to solve the task, I chose JavaScript because is the one I know the best and I was more comfortable to use.
 
