@@ -8,12 +8,12 @@
     <!--<script src="newindex.js"></script>-->
     <title>Minesweeper</title>
     <style>
-      #div1 {
+      #tableContainer {
         margin: 10px;
         font-size: 1.25em;
       }
       table {
-        border-collapse: collapse;
+        /*border-collapse: collapse;*/
         border: 1px solid #7f7f7f;
       }
       td {
@@ -25,159 +25,148 @@
     </style>
   </head>
   <body>
-    <div id="inputContainer">
+    <div id="inputsContainer">
       <input type="text" id="rowsInput" placeholder="Rows number" />
       <input type="text" id="colsInput" placeholder="Columns number" />
       <input type="text" id="minesInput" placeholder="Mines number" />
     </div>
-    <div class="container">
-      <button id="btn" onclick="drawTable()">Play</button>
-
-      <div id="div1"></div>
+    <div>
+      <button class="btn" onclick="drawTable()">Type1</button>
+      <button class="btn" onclick="drawTable2()">Type2</button>
+      <div id="tableContainer"></div>
+      <div id="tableContainer2"></div>
     </div>
     <script>
       function drawTable() {
-        var totalRows = document.getElementById("rowsInput").value;
-        var cellsInRow = document.getElementById("colsInput").value;
+        let totalRows = document.getElementById("rowsInput").value;
+        let cellsInARow = document.getElementById("colsInput").value;
         let minesInput = document.getElementById("minesInput").value;
-        var min = 1;
-        var getRandom1 = [];
-        var max = totalRows <= cellsInRow ? totalRows : cellsInRow;
-        // get the reference for the body
-        var div1 = document.getElementById("div1");
+        let randomNumbers = [];
+        let max = totalRows <= cellsInARow ? totalRows : cellsInARow;
 
-        // creates a <table> element
-        var tbl = document.createElement("table");
-        for (var x = 0; x < minesInput; x++) {
-          getRandom1[x] = Math.floor(Math.random() * max);
-          console.log(getRandom1[x]);
+        for (let x = 0; x < minesInput; x++) {
+          do {
+            random = Math.floor(Math.random() * max);
+          } while (randomNumbers.includes(random));
+          randomNumbers[x] = random;
         }
 
-        for (var i = 0; i < getRandom1.length; i++) {
-          for (var j = 0; j < getRandom1.length; j++) {
-            if (i != j) {
-              if (getRandom1[i] == getRandom1[j]) {
-                // means there are duplicate values
-                getRandom1[i] = Math.floor(Math.random() * max);
-                console.log(getRandom1[i]);
-              }
-            }
-          }
-        }
+        let tableContainer = document.getElementById("tableContainer");
+        let tbl = document.createElement("table");
 
-        // creating rows
-        for (var r = 0; r < totalRows; r++) {
-          var row = document.createElement("tr");
+        for (let r = 0; r < totalRows; r++) {
+          let row = document.createElement("tr");
+          for (let c = 0; c < cellsInARow; c++) {
+            let cell = document.createElement("td");
 
-          // create cells in row
-          for (var c = 0; c < cellsInRow; c++) {
-            var cell = document.createElement("td");
-            //getRandom = 3;
-            for (var i = 0; i < getRandom1.length; i++) {
-              if (r == getRandom1[i] && c == getRandom1[i]) {
-                // console.log("a");
-
-                var cellText = document.createTextNode("X");
+            for (let i = 0; i < randomNumbers.length; i++) {
+              if (r == randomNumbers[i] && c == randomNumbers[i]) {
+                let cellText = document.createTextNode("X");
                 cell.appendChild(cellText);
                 row.appendChild(cell);
               } else {
-                //console.log("b");
-                var cellText = document.createTextNode(" ");
+                let cellText = document.createTextNode(" ");
                 cell.appendChild(cellText);
                 row.appendChild(cell);
               }
             }
           }
+          tbl.appendChild(row);
+        }
+        tableContainer.appendChild(tbl);
 
-          tbl.appendChild(row); // add the row to the end of the table body
+        for (let i = 0, row; (row = tbl.rows[i]); i++) {
+          for (let j = 0, col; (col = row.cells[j]); j++) {
+            if (col.innerText == "X") {
+              row.cells[j - 1] ? (row.cells[j - 1].innerText += 1) : null;
+              row.cells[j + 1] ? (row.cells[j + 1].innerText += 1) : null;
+              tbl.rows[i - 1]
+                ? (tbl.rows[i - 1].cells[j].innerText += 1)
+                : null;
+              tbl.rows[i - 1]
+                ? (tbl.rows[i - 1].cells[j + 1].innerText += 1)
+                : null;
+              tbl.rows[i - 1]
+                ? (tbl.rows[i - 1].cells[j - 1].innerText += 1)
+                : null;
+              tbl.rows[i + 1]
+                ? (tbl.rows[i + 1].cells[j].innerText += 1)
+                : null;
+              tbl.rows[i + 1]
+                ? (tbl.rows[i + 1].cells[j - 1].innerText += 1)
+                : null;
+              tbl.rows[i + 1]
+                ? (tbl.rows[i + 1].cells[j + 1].innerText += 1)
+                : null;
+            }
+          }
+        }
+      }
+      function drawTable2() {
+        let totalRows = document.getElementById("rowsInput").value;
+        let cellsInARow = document.getElementById("colsInput").value;
+        let minesInput = document.getElementById("minesInput").value;
+        let row = [];
+        let totRows = [];
+        let randomX = [];
+        let randomY = [];
+
+        for (let x = 0; x < totalRows; x++) {
+          let row = [];
+          for (let i = 0; i < cellsInARow; i++) {
+            row.push(0);
+          }
+          totRows.push(row);
         }
 
-        div1.appendChild(tbl); // appends <table> into <div1>
+        for (let x = 0; x < minesInput; x++) {
+          do {
+            randomsX = Math.floor(Math.random() * totalRows);
+            randomsY = Math.floor(Math.random() * cellsInARow);
+          } while (randomX.includes(randomsX) && randomY.includes(randomsY));
+          randomX[x] = randomsX;
+          randomY[x] = randomsY;
+
+          for (let i = 0; i < totRows.length; i++) {
+            for (let j = 0; j < totRows[i].length; j++) {
+              totRows[randomX[x]][randomY[x]] = "X";
+            }
+          }
+        }
+
+        for (let i = 0; i < totRows.length; i++) {
+          for (let j = 0; j < totRows[i].length; j++) {
+            if (totRows[i][j] == "X") {
+              if (i - 1 >= 0) {
+                totRows[i - 1][j] += 1;
+              }
+              if (j + 1 < cellsInARow) {
+                totRows[i][j + 1] += 1;
+              }
+              if (i - 1 >= 0 && j - 1 >= 0) {
+                totRows[i - 1][j - 1] += 1;
+              }
+              if (i - 1 >= 0 && j + 1 < cellsInARow) {
+                totRows[i - 1][j + 1] += 1;
+              }
+              if (i + 1 < totalRows && j + 1 < cellsInARow) {
+                totRows[i + 1][j + 1] += 1;
+              }
+              if (i + 1 < totalRows && j - 1 >= 0) {
+                totRows[i + 1][j - 1] += 1;
+              }
+              if (i + 1 < totalRows) {
+                totRows[i + 1][j] += 1;
+              }
+              if (j - 1 >= 0) {
+                totRows[i][j - 1] += 1;
+              }
+            }
+          }
+        }
+
+        document.getElementById("tableContainer2").innerHTML = totRows;
       }
     </script>
   </body>
 </html>
-
-<!--
-  <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="newindex.js"></script>
-    <title>Minesweeper</title>
-    <style>
-      #div1 {
-        margin: 10px;
-        font-size: 1.25em;
-      }
-      table {
-        border-collapse: collapse;
-        border: 1px solid #7f7f7f;
-      }
-      td {
-        border: 1px solid #7f7f7f;
-        width: 50px;
-        height: 50px;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="inputContainer">
-      <input type="text" id="rowsInput" placeholder="Rows number" />
-      <input type="text" id="colsInput" placeholder="Columns number" />
-      <input type="text" id="minesInput" placeholder="Mines number" />
-    </div>
-    <div class="container">
-      <button id="btn" onclick="drawTable()">Play</button>
-
-      <div id="div1"></div>
-    </div>
-    <script>
-      /*var totalRows = document.getElementById("rowsInput").value;
-            var cellsInRow = document.getElementById("colsInput").value;
-            var min = 1;
-            var max = totalRows * cellsInRow;*/
-
-      /* var totalRows = 5;
-      var cellsInRow = 5;
-      var min = 1;
-      var max = 10;*/
-      function drawTable() {
-        var totalRows = document.getElementById("rowsInput").value;
-        var cellsInRow = document.getElementById("colsInput").value;
-        var min = 1;
-        var max = totalRows * cellsInRow;
-        // get the reference for the body
-        var div1 = document.getElementById("div1");
-
-        // creates a <table> element
-        var tbl = document.createElement("table");
-
-        // creating rows
-        for (var r = 0; r < totalRows; r++) {
-          var row = document.createElement("tr");
-
-          // create cells in row
-          for (var c = 0; c < cellsInRow; c++) {
-            var cell = document.createElement("td");
-            //getRandom = Math.floor(Math.random() * (max - min + 1)) + min;
-            var cellText = document.createTextNode(
-              Math.floor(Math.random() * (max - min + 1)) + min
-            );
-            cell.appendChild(cellText);
-            row.appendChild(cell);
-          }
-
-          tbl.appendChild(row); // add the row to the end of the table body
-        }
-
-        div1.appendChild(tbl); // appends <table> into <div1>
-      }
-      window.onload = drawTable;
-    </script>
-  </body>
-</html>-->
